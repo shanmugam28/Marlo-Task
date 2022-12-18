@@ -276,72 +276,77 @@ class _RoleSelectorState extends State<_RoleSelector> {
         ),
       ),
       builder: (context) {
-        return Container(
-          padding: const EdgeInsets.all(30.0),
-          child: Column(
-            children: [
-              Container(
-                height: 5.0,
-                width: 50.0,
-                color: dataManager.isDarkTheme ? const Color(0xFF032935) : const Color(0xFFDFEFF5),
-              ),
-              Row(
-                children: const [
-                  Text(
-                    'Team roles',
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Expanded(child: SizedBox())
-                ],
-              ),
-              const SizedBox(height: 30.0),
-              ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: 5,
-                itemBuilder: (context, index) {
-                  return InkWell(
-                    onTap: () {
-                      if (innerRole == roles[index]) {
-                        Navigator.pop(context);
-                        return;
-                      }
-                      innerRole = roles[index];
-                      widget.onRoleChanged?.call(innerRole);
-                      Navigator.pop(context);
-                      selectedRole = innerRole;
-                      setState(() {});
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: innerRole == roles[index]
-                            ? (dataManager.isDarkTheme ? const Color(0xFF032935) : const Color(0xFFDFEFF5))
-                            : dataManager.isDarkTheme
-                                ? const Color(0xFF232323)
-                                : Colors.white,
-                        borderRadius: BorderRadius.circular(10.0),
+        return OrientationBuilder(builder: (context, orientation) {
+          bool isPortrait = orientation == Orientation.portrait;
+          return Container(
+            padding: const EdgeInsets.all(30.0),
+            child: Column(
+              children: [
+                Container(
+                  height: 5.0,
+                  width: 50.0,
+                  color: dataManager.isDarkTheme ? const Color(0xFF032935) : const Color(0xFFDFEFF5),
+                ),
+                Row(
+                  children: const [
+                    Text(
+                      'Team roles',
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
                       ),
-                      padding: const EdgeInsets.all(20.0),
-                      margin: const EdgeInsets.all(5.0),
-                      child: Text(
-                        roles[index].getDisplayName(),
-                        style: TextStyle(
-                          color: innerRole == roles[index]
-                              ? Theme.of(context).accentColor
-                              : Theme.of(context).disabledColor,
-                          fontWeight: FontWeight.bold,
+                    ),
+                    Expanded(child: SizedBox())
+                  ],
+                ),
+                SizedBox(height: isPortrait ? 30.0 : 10.0),
+                Expanded(
+                  child: ListView.builder(
+                    physics: isPortrait ? const NeverScrollableScrollPhysics() : const AlwaysScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: 5,
+                    itemBuilder: (context, index) {
+                      return InkWell(
+                        onTap: () {
+                          if (innerRole == roles[index]) {
+                            Navigator.pop(context);
+                            return;
+                          }
+                          innerRole = roles[index];
+                          widget.onRoleChanged?.call(innerRole);
+                          Navigator.pop(context);
+                          selectedRole = innerRole;
+                          setState(() {});
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: innerRole == roles[index]
+                                ? (dataManager.isDarkTheme ? const Color(0xFF032935) : const Color(0xFFDFEFF5))
+                                : dataManager.isDarkTheme
+                                    ? const Color(0xFF232323)
+                                    : Colors.white,
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          padding: const EdgeInsets.all(20.0),
+                          margin: const EdgeInsets.all(5.0),
+                          child: Text(
+                            roles[index].getDisplayName(),
+                            style: TextStyle(
+                              color: innerRole == roles[index]
+                                  ? Theme.of(context).accentColor
+                                  : Theme.of(context).disabledColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
-        );
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          );
+        });
       },
     );
   }
