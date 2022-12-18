@@ -47,6 +47,17 @@ ThemeData darkTheme = ThemeData(
   accentColor: accentColor,
   primarySwatch: accentColor,
   bottomNavigationBarTheme: bottomNavigationBarTheme,
+  scaffoldBackgroundColor: Colors.black,
+  appBarTheme: const AppBarTheme(
+    color: Colors.black,
+    elevation: 0.0,
+    titleTextStyle: TextStyle(
+      fontWeight: FontWeight.bold,
+      fontSize: 30.0,
+      color: Colors.white,
+    ),
+    actionsIconTheme: IconThemeData(color: disabledColor),
+  ),
 );
 
 BottomNavigationBarThemeData get bottomNavigationBarTheme => const BottomNavigationBarThemeData(

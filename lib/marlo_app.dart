@@ -72,18 +72,24 @@ class _MarloAppState extends State<MarloApp> {
               ),
             )
           : null,
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: currentIndex,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.monetization_on), label: 'Loans'),
-          BottomNavigationBarItem(icon: Icon(Icons.task), label: 'Contracts'),
-          BottomNavigationBarItem(icon: Icon(Icons.people_outline), label: 'Teams'),
-          BottomNavigationBarItem(icon: Icon(Icons.chat_outlined), label: 'Chat'),
-        ],
-        onTap: (index) {
-          setState(() => currentIndex = index);
-        },
+      bottomNavigationBar: ClipRRect(
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(10.0),
+          topRight: Radius.circular(10.0),
+        ),
+        child: BottomNavigationBar(
+          currentIndex: currentIndex,
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: 'Home'),
+            BottomNavigationBarItem(icon: Icon(Icons.monetization_on), label: 'Loans'),
+            BottomNavigationBarItem(icon: Icon(Icons.task), label: 'Contracts'),
+            BottomNavigationBarItem(icon: Icon(Icons.people_outline), label: 'Teams'),
+            BottomNavigationBarItem(icon: Icon(Icons.chat_outlined), label: 'Chat'),
+          ],
+          onTap: (index) {
+            setState(() => currentIndex = index);
+          },
+        ),
       ),
       body: _MarloScreens(index: currentIndex),
     );

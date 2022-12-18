@@ -3,6 +3,7 @@ import 'package:marlo_task/api_manager.dart';
 import 'package:marlo_task/contact_atributes/invite_contact.dart';
 import 'package:marlo_task/providers/data_manager.dart';
 import 'package:marlo_task/widgets/my_app_bar.dart';
+import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 import '../contact_atributes/Role.dart';
@@ -113,7 +114,6 @@ class _ContinueButtonState extends State<_ContinueButton> {
 
   _onTap() async {
     String email = widget.emailTextController.text.trim();
-    debugPrint("_ContinueButtonState build: checkzzz is email empty ${email.isEmpty} and role ${widget.role.call()}");
     if (email.isEmpty) {
       widget.emailError?.call('email is empty');
       return;
@@ -151,7 +151,7 @@ class _ContinueButtonState extends State<_ContinueButton> {
       } else {
         if (response?.error == 'EMAIL_EXISTS') {
           widget.emailError?.call('Email already exist');
-        } else if(response?.error == 'INVALID_EMAIL'){
+        } else if (response?.error == 'INVALID_EMAIL') {
           widget.emailError?.call('Enter a valid email');
         }
       }
@@ -177,6 +177,7 @@ class _EmailTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    DataManager dataManager = Provider.of<DataManager>(context, listen: false);
     return TextField(
       controller: controller,
       cursorColor: Theme.of(context).disabledColor,
@@ -188,7 +189,7 @@ class _EmailTextField extends StatelessWidget {
           color: Theme.of(context).disabledColor,
           fontSize: 14.0,
         ),
-        fillColor: const Color(0xFFE9EEF0),
+        fillColor: dataManager.isDarkTheme ? const Color(0xFF232323) : const Color(0xFFE9EEF0),
         filled: true,
       ),
     );
@@ -213,15 +214,18 @@ class _RoleSelectorState extends State<_RoleSelector> {
   Role? selectedRole;
   List<Role> roles = List.from(Role.values)..removeAt(0);
 
+  late DataManager dataManager;
+
   @override
   Widget build(BuildContext context) {
+    dataManager = Provider.of<DataManager>(context, listen: false);
     return InkWell(
       onTap: _showBottomSheet,
       child: Container(
         height: 60.0,
         width: double.infinity,
-        decoration: const BoxDecoration(
-          color: Color(0xFFE9EEF0),
+        decoration: BoxDecoration(
+          color: dataManager.isDarkTheme ? const Color(0xFF232323) : const Color(0xFFE9EEF0),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Row(
@@ -246,6 +250,7 @@ class _RoleSelectorState extends State<_RoleSelector> {
     Role innerRole = selectedRole ?? widget.role;
     await showModalBottomSheet(
       context: context,
+      backgroundColor: const Color(0xFF161618),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           topRight: Radius.circular(20.0),
@@ -260,7 +265,7 @@ class _RoleSelectorState extends State<_RoleSelector> {
               Container(
                 height: 5.0,
                 width: 50.0,
-                color: const Color(0xFFDFEFF5),
+                color: dataManager.isDarkTheme ? const Color(0xFF032935) : const Color(0xFFDFEFF5),
               ),
               Row(
                 children: const [
@@ -294,7 +299,9 @@ class _RoleSelectorState extends State<_RoleSelector> {
                     },
                     child: Container(
                       decoration: BoxDecoration(
-                        color: innerRole == roles[index] ? const Color(0xFFDFEFF5) : Colors.white,
+                        color: innerRole == roles[index]
+                            ? (dataManager.isDarkTheme ? const Color(0xFF032935) : const Color(0xFFDFEFF5))
+                            : dataManager.isDarkTheme ? const Color(0xFF232323) : Colors.white,
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       padding: const EdgeInsets.all(20.0),

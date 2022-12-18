@@ -58,7 +58,6 @@ class ApiManager {
             InvitedContact.fromJson(invite),
           );
         });
-        debugPrint("ApiManager getAllPeople: checkzzz contacts ${allContacts.length}");
       }
     }
     return {

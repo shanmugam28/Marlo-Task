@@ -35,7 +35,12 @@ class ContractScreen extends StatelessWidget {
                 shrinkWrap: true,
                 itemBuilder: (context, index) => _ContactTile.allContactCategory(dataManager.contacts[index]),
               ),
-            if (dataManager.contacts.isEmpty) _getEmptyContent(context, text: 'No contacts available'),
+            if (dataManager.contacts.isEmpty)
+              _getEmptyContent(
+                context,
+                text: 'No contacts available',
+                isDarkTheme: dataManager.isDarkTheme,
+              ),
             const SizedBox(height: 20.0),
             _Header(
               headerText: 'Invited people',
@@ -50,18 +55,23 @@ class ContractScreen extends StatelessWidget {
                 shrinkWrap: true,
                 itemBuilder: (context, index) => _ContactTile.invitedCategory(dataManager.invitedContacts[index]),
               ),
-            if (dataManager.invitedContacts.isEmpty) _getEmptyContent(context, text: 'No invites available')
+            if (dataManager.invitedContacts.isEmpty)
+              _getEmptyContent(
+                context,
+                text: 'No invites available',
+                isDarkTheme: dataManager.isDarkTheme,
+              )
           ],
         ),
       ),
     );
   }
 
-  _getEmptyContent(context, {required String text}) => Container(
+  _getEmptyContent(context, {required String text, required bool isDarkTheme}) => Container(
         height: 70.0,
         width: double.infinity,
         decoration: BoxDecoration(
-          color: const Color(0xFFE9EEF0),
+          color: isDarkTheme ? const Color(0xFF161618) : const Color(0xFFE9EEF0),
           borderRadius: BorderRadius.circular(10.0),
         ),
         child: Center(
@@ -98,13 +108,14 @@ class _ContactTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    DataManager dataManager = Provider.of<DataManager>(context, listen: false);
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Container(
         padding: const EdgeInsets.all(10.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.0),
-          color: Colors.white,
+          color: dataManager.isDarkTheme ? const Color(0xFF161618) : Colors.white,
         ),
         child: Row(
           children: [
