@@ -6,6 +6,7 @@ import 'package:marlo_task/widgets/my_app_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
+import '../constants.dart';
 import '../contact_atributes/Role.dart';
 
 class InviteScreen extends StatefulWidget {
@@ -58,7 +59,7 @@ class _InviteScreenState extends State<InviteScreen> {
                 setState(() => emailError = error);
               },
             ),
-            const SizedBox(height: 5.0)
+            const SizedBox(height: 20.0)
           ],
         ),
       ),
@@ -126,6 +127,16 @@ class _ContinueButtonState extends State<_ContinueButton> {
     }
     setState(() => isLoading = true);
     try {
+      if (!await isNetworkAvailable()) {
+        ScaffoldMessenger.of(context)
+          ..clearSnackBars()
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            const SnackBar(
+              content: Text('No internet'),
+            ),
+          );
+      }
       InvitedContact contact = InvitedContact(
         id: const Uuid().v1(),
         email: email,
@@ -250,7 +261,7 @@ class _RoleSelectorState extends State<_RoleSelector> {
     Role innerRole = selectedRole ?? widget.role;
     await showModalBottomSheet(
       context: context,
-      backgroundColor: const Color(0xFF161618),
+      backgroundColor: dataManager.isDarkTheme ? const Color(0xFF161618) : null,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           topRight: Radius.circular(20.0),
@@ -301,7 +312,9 @@ class _RoleSelectorState extends State<_RoleSelector> {
                       decoration: BoxDecoration(
                         color: innerRole == roles[index]
                             ? (dataManager.isDarkTheme ? const Color(0xFF032935) : const Color(0xFFDFEFF5))
-                            : dataManager.isDarkTheme ? const Color(0xFF232323) : Colors.white,
+                            : dataManager.isDarkTheme
+                                ? const Color(0xFF232323)
+                                : Colors.white,
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       padding: const EdgeInsets.all(20.0),

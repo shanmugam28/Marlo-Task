@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:marlo_task/api_manager.dart';
 import 'package:marlo_task/providers/data_manager.dart';
@@ -100,8 +102,14 @@ class _MarloAppState extends State<MarloApp> {
         barrierColor: Colors.transparent,
         context: context,
         builder: (context) {
-          return const Center(
-            child: CircularProgressIndicator(),
+          return BackdropFilter(
+            filter: ImageFilter.blur(
+              sigmaX: 5,
+              sigmaY: 5,
+            ),
+            child: const Center(
+              child: CircularProgressIndicator(),
+            ),
           );
         });
 

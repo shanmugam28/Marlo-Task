@@ -2,7 +2,6 @@
 // "lastname":"ahmed","mobile":"9997776666","dob":"2022-06-22T00:00:00.000Z","contact_address_line_1":"address1",
 // "contact_address_line_2":"address2","city":null,"county_id":null,"country_id":null,"isactive":true,"role":1,"role_name":"Admin"}
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'Role.dart';
@@ -49,11 +48,12 @@ class Contact {
   }
 
   Widget getAvatar({double? iconSize}) {
-    String avatarText =
-        name.isUnknownName ? 'U' : '${name.firstName?.substring(0, 1)} ${name.lastName?.substring(0, 1)}'.trim();
+    String avatarText = name.isUnknownName
+        ? email.substring(0, 1)
+        : '${name.firstName?.substring(0, 1)} ${name.lastName?.substring(0, 1)}'.trim();
     return Container(
-      height: iconSize ?? 45,
-      width: iconSize ?? 45,
+      height: iconSize ?? 50,
+      width: iconSize ?? 50,
       decoration: BoxDecoration(
         color: const Color(0xFF1A62C6),
         borderRadius: BorderRadius.circular(10.0),
@@ -70,4 +70,6 @@ class Contact {
       ),
     );
   }
+
+  String get displayName => name.isUnknownName ? email : name.displayName;
 }

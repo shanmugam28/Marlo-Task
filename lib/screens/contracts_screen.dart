@@ -1,3 +1,5 @@
+library contract_library;
+
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -7,6 +9,11 @@ import 'package:marlo_task/providers/data_manager.dart';
 import 'package:provider/provider.dart';
 
 import '../contact_atributes/Role.dart';
+import '../widgets/my_app_bar.dart';
+
+part 'all_people_screen.dart';
+
+part 'invited_people_screen.dart';
 
 class ContractScreen extends StatelessWidget {
   const ContractScreen({Key? key}) : super(key: key);
@@ -26,6 +33,11 @@ class ContractScreen extends StatelessWidget {
               headerText: 'All people',
               count: dataManager.contacts.length,
               showSeeAllOption: dataManager.contacts.length > 3,
+              onSeeAllTapped: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const AllPeopleScreen(),
+                ),
+              ),
             ),
             const SizedBox(height: 10.0),
             if (dataManager.contacts.isNotEmpty)
@@ -33,7 +45,9 @@ class ContractScreen extends StatelessWidget {
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: min(3, dataManager.contacts.length),
                 shrinkWrap: true,
-                itemBuilder: (context, index) => _ContactTile.allContactCategory(dataManager.contacts[index]),
+                itemBuilder: (context, index) => _ContactTile.allContactCategory(
+                  dataManager.contacts.reversed.toList()[index],
+                ),
               ),
             if (dataManager.contacts.isEmpty)
               _getEmptyContent(
@@ -46,6 +60,11 @@ class ContractScreen extends StatelessWidget {
               headerText: 'Invited people',
               count: dataManager.invitedContacts.length,
               showSeeAllOption: dataManager.invitedContacts.length > 2,
+              onSeeAllTapped: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const InvitedPeopleScreen(),
+                ),
+              ),
             ),
             const SizedBox(height: 10.0),
             if (dataManager.invitedContacts.isNotEmpty)
@@ -53,7 +72,9 @@ class ContractScreen extends StatelessWidget {
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: min(2, dataManager.invitedContacts.length),
                 shrinkWrap: true,
-                itemBuilder: (context, index) => _ContactTile.invitedCategory(dataManager.invitedContacts[index]),
+                itemBuilder: (context, index) => _ContactTile.invitedCategory(
+                  dataManager.invitedContacts.reversed.toList()[index],
+                ),
               ),
             if (dataManager.invitedContacts.isEmpty)
               _getEmptyContent(
@@ -102,7 +123,7 @@ class _ContactTile extends StatelessWidget {
     this.contact,
     this.invitedContact,
   })  : avatar = contact?.getAvatar() ?? invitedContact!.getAvatar(),
-        displayName = contact?.name.displayName ?? invitedContact!.email,
+        displayName = contact?.displayName ?? invitedContact!.email,
         role = contact?.role ?? invitedContact!.role,
         super(key: key);
 
@@ -125,11 +146,15 @@ class _ContactTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    displayName,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 17.0,
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10.0),
+                    child: Text(
+                      displayName,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 17.0,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 5.0),
@@ -171,9 +196,7 @@ class _Header extends StatelessWidget {
     required this.count,
     this.showSeeAllOption = true,
     this.onSeeAllTapped,
-  })  : assert((showSeeAllOption || onSeeAllTapped == null),
-            'if [showSeeAllOption] is false, then [onSeeAllTapped] should be null'),
-        super(key: key);
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
