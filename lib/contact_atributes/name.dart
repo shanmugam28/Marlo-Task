@@ -1,4 +1,3 @@
-
 class Name {
   final String? firstName, lastName;
 

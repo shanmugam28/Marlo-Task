@@ -39,26 +39,28 @@ class _MarloAppState extends State<MarloApp> {
     }
     return Scaffold(
       appBar: MyAppBar(
-        title: 'Teams',
-        actions: [
-          const Padding(
-            padding: EdgeInsets.all(10.0),
-            child: Icon(Icons.search),
-          ),
-          PopupMenuButton(
-              itemBuilder: (context) => [
-                    PopupMenuItem(
-                      child: const Text('Refresh'),
-                      onTap: () => Future.delayed(const Duration(milliseconds: 100)).then(
-                        (value) => fetchData(context),
-                      ),
-                    ),
-                    PopupMenuItem(
-                      child: const Text('Toggle Theme'),
-                      onTap: () => DataManager().toggleTheme(),
-                    ),
-                  ])
-        ],
+        title: currentIndex == 2 ? 'Teams' : null,
+        actions: currentIndex == 2
+            ? [
+                const Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: Icon(Icons.search),
+                ),
+                PopupMenuButton(
+                    itemBuilder: (context) => [
+                          PopupMenuItem(
+                            child: const Text('Refresh'),
+                            onTap: () => Future.delayed(const Duration(milliseconds: 100)).then(
+                              (value) => fetchData(context),
+                            ),
+                          ),
+                          PopupMenuItem(
+                            child: const Text('Toggle Theme'),
+                            onTap: () => DataManager().toggleTheme(),
+                          ),
+                        ])
+              ]
+            : null,
       ),
       floatingActionButton: currentIndex == 2
           ? FloatingActionButton(
@@ -74,23 +76,27 @@ class _MarloAppState extends State<MarloApp> {
               ),
             )
           : null,
-      bottomNavigationBar: ClipRRect(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(10.0),
-          topRight: Radius.circular(10.0),
-        ),
-        child: BottomNavigationBar(
-          currentIndex: currentIndex,
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: 'Home'),
-            BottomNavigationBarItem(icon: Icon(Icons.monetization_on), label: 'Loans'),
-            BottomNavigationBarItem(icon: Icon(Icons.task), label: 'Contracts'),
-            BottomNavigationBarItem(icon: Icon(Icons.people_outline), label: 'Teams'),
-            BottomNavigationBarItem(icon: Icon(Icons.chat_outlined), label: 'Chat'),
-          ],
-          onTap: (index) {
-            setState(() => currentIndex = index);
-          },
+      bottomNavigationBar: Material(
+        elevation: 10.0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+        child: ClipRRect(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(10.0),
+            topRight: Radius.circular(10.0),
+          ),
+          child: BottomNavigationBar(
+            currentIndex: currentIndex,
+            items: const [
+              BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: 'Home'),
+              BottomNavigationBarItem(icon: Icon(Icons.monetization_on), label: 'Loans'),
+              BottomNavigationBarItem(icon: Icon(Icons.task), label: 'Contracts'),
+              BottomNavigationBarItem(icon: Icon(Icons.people_outline), label: 'Teams'),
+              BottomNavigationBarItem(icon: Icon(Icons.chat_outlined), label: 'Chat'),
+            ],
+            onTap: (index) {
+              setState(() => currentIndex = index);
+            },
+          ),
         ),
       ),
       body: _MarloScreens(index: currentIndex),
@@ -117,36 +123,35 @@ class _MarloAppState extends State<MarloApp> {
       ApiManager? apiManager = await ApiManager.getInstance();
       if (apiManager != null) {
         debugPrint("_MarloAppState build: not null");
-        Map<String, dynamic> data = await apiManager.getPeopleData();
-
-        dataManager
-          ..addContacts(data['contacts'])
-          ..addInvitedContacts(data['invitedContacts'])
-          ..makeAppSynced();
-      } else {
-        setState(() {
-          isSyncFailed = true;
-        });
-        if (mounted) {
-          ScaffoldMessenger.of(context)
-            ..clearSnackBars()
-            ..hideCurrentSnackBar()
-            ..showSnackBar(const SnackBar(content: Text('Unable to fetch data!')));
+        ApiResponse<Map<String, dynamic>?> response = await apiManager.getPeopleData();
+        if (response.status) {
+          dataManager
+            ..addContacts(response.data!['contacts'])
+            ..addInvitedContacts(response.data!['invitedContacts'])
+            ..makeAppSynced();
+        } else {
+          _resetState(context, 'Something went wrong!');
         }
+      } else {
+        _resetState(context, 'Unable to fetch data!');
       }
     } else {
-      setState(() {
-        isSyncFailed = true;
-      });
-      if (mounted) {
-        ScaffoldMessenger.of(context)
-          ..clearSnackBars()
-          ..hideCurrentSnackBar()
-          ..showSnackBar(const SnackBar(content: Text('No internet')));
-      }
+      _resetState(context, 'No internet');
     }
     if (mounted) {
       Navigator.pop(context);
+    }
+  }
+
+  _resetState(BuildContext context, String? snackMessage) {
+    setState(() {
+      isSyncFailed = true;
+    });
+    if (mounted && snackMessage != null) {
+      ScaffoldMessenger.of(context)
+        ..clearSnackBars()
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(snackMessage)));
     }
   }
 }

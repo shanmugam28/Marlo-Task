@@ -5,8 +5,6 @@ import 'package:http/http.dart';
 import 'package:marlo_task/contact_atributes/contact.dart';
 import 'package:marlo_task/contact_atributes/invite_contact.dart';
 
-import 'constants.dart';
-
 class ApiManager {
   final Client _client;
   final String _token;
@@ -18,8 +16,8 @@ class ApiManager {
   static Future<ApiManager?> getInstance() async {
     Client client = Client();
 
-    Uri uri = Uri.parse(
-        'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyBFiEDfEaaK6lBtIdxLXspmxGux1TGsCmg');
+    Uri uri = Uri.parse('https://www.googleapis.com/identitytoolkit/v3/relyingparty/'
+        'verifyPassword?key=AIzaSyBFiEDfEaaK6lBtIdxLXspmxGux1TGsCmg');
     Response response = await client.post(
       uri,
       body: {
@@ -37,15 +35,16 @@ class ApiManager {
     return null;
   }
 
-  Future<Map<String, dynamic>> getPeopleData() async {
+  Future<ApiResponse<Map<String, dynamic>?>> getPeopleData() async {
     List<Contact> allContacts = [];
     List<InvitedContact> invitedContacts = [];
     Uri uri = Uri.parse(
-      'https://asia-southeast1-marlo-bank-dev.cloudfunctions.net/api_dev/company/6dc9858b-b9eb-4248-a210-0f1f08463658/teams',
+      'https://asia-southeast1-marlo-bank-dev.cloudfunctions.net/'
+      'api_dev/company/6dc9858b-b9eb-4248-a210-0f1f08463658/teams',
     );
     Response response = await _client.get(uri, headers: _header);
 
-    debugPrint("ApiManager getPeopleData: result ${response.statusCode} and ${response.body}");
+    debugPrint("ApiManager getPeopleData: result ${response.statusCode}");
 
     if (response.statusCode == 200) {
       Map decodedResponse = jsonDecode(response.body);
@@ -54,16 +53,15 @@ class ApiManager {
           allContacts.add(Contact.fromJson(contact));
         });
         decodedResponse['data']['invites'].forEach((invite) {
-          invitedContacts.add(
-            InvitedContact.fromJson(invite),
-          );
+          invitedContacts.add(InvitedContact.fromJson(invite));
         });
       }
+      return ApiResponse.success(data: {
+        'contacts': allContacts,
+        'invitedContacts': invitedContacts,
+      });
     }
-    return {
-      'contacts': allContacts,
-      'invitedContacts': invitedContacts,
-    };
+    return ApiResponse.error();
   }
 
   Future<ApiResponse<InvitedContact?>> inviteContact(InvitedContact contact) async {
@@ -75,7 +73,7 @@ class ApiManager {
       body: contact.map,
     );
 
-    debugPrint("ApiManager invitePeople: result ${response.statusCode} and ${response.body}");
+    debugPrint("ApiManager invitePeople: result ${response.statusCode}");
 
     Map decodedResponse = jsonDecode(response.body);
     if ([200, 201].contains(response.statusCode)) {

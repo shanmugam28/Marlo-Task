@@ -6,10 +6,7 @@ class InvitedPeopleScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     DataManager dataManager = Provider.of<DataManager>(context, listen: false);
-    List<InvitedContact> contacts = dataManager.invitedContacts
-      ..sort((a, b) => a.email.toUpperCase().compareTo(
-        b.email.toUpperCase(),
-      ));
+    List<InvitedContact> contacts = dataManager.sortedInvitedContacts;
     return Scaffold(
       appBar: const MyAppBar(
         showBackButton: true,

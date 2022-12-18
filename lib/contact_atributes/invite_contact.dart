@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'Role.dart';
+import 'role.dart';
 
 class InvitedContact {
   final String id, email;

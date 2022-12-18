@@ -6,10 +6,7 @@ class AllPeopleScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     DataManager dataManager = Provider.of<DataManager>(context, listen: false);
-    List<Contact> contacts = dataManager.contacts
-      ..sort((a, b) => a.displayName.toUpperCase().compareTo(
-            b.displayName.toUpperCase(),
-          ));
+    List<Contact> contacts = dataManager.sortedContacts;
     return Scaffold(
       appBar: const MyAppBar(
         showBackButton: true,

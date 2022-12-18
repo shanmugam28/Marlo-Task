@@ -18,7 +18,13 @@ class DataManager extends ChangeNotifier {
 
   List<Contact> get contacts => _contacts.values.toList();
 
+  List<Contact> get sortedContacts =>
+      contacts..sort((a, b) => a.displayName.toUpperCase().compareTo(b.displayName.toUpperCase()));
+
   List<InvitedContact> get invitedContacts => _invitedContacts.values.toList();
+
+  List<InvitedContact> get sortedInvitedContacts =>
+      invitedContacts..sort((a, b) => a.email.toUpperCase().compareTo(b.email.toUpperCase()));
 
   bool get isDarkTheme => themeMode == ThemeMode.dark;
 

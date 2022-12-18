@@ -8,7 +8,7 @@ import 'package:marlo_task/contact_atributes/invite_contact.dart';
 import 'package:marlo_task/providers/data_manager.dart';
 import 'package:provider/provider.dart';
 
-import '../contact_atributes/Role.dart';
+import '../contact_atributes/role.dart';
 import '../widgets/my_app_bar.dart';
 
 part 'all_people_screen.dart';
@@ -234,6 +234,7 @@ class _Header extends StatelessWidget {
               child: Text(
                 'See all',
                 style: TextStyle(
+                  // ignore: deprecated_member_use
                   color: Theme.of(context).accentColor,
                   fontWeight: FontWeight.bold,
                   fontSize: 17.0,

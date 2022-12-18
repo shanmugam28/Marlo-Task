@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:marlo_task/api_manager.dart';
 import 'package:marlo_task/contact_atributes/invite_contact.dart';
@@ -7,7 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 import '../constants.dart';
-import '../contact_atributes/Role.dart';
+import '../contact_atributes/role.dart';
 
 class InviteScreen extends StatefulWidget {
   const InviteScreen({Key? key}) : super(key: key);
@@ -189,19 +191,22 @@ class _EmailTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     DataManager dataManager = Provider.of<DataManager>(context, listen: false);
-    return TextField(
-      controller: controller,
-      cursorColor: Theme.of(context).disabledColor,
-      decoration: InputDecoration(
-        errorText: errorMessage,
-        border: InputBorder.none,
-        labelText: 'Business email',
-        labelStyle: TextStyle(
-          color: Theme.of(context).disabledColor,
-          fontSize: 14.0,
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(10.0),
+      child: TextField(
+        controller: controller,
+        cursorColor: Theme.of(context).disabledColor,
+        decoration: InputDecoration(
+          errorText: errorMessage,
+          border: InputBorder.none,
+          labelText: 'Business email',
+          labelStyle: TextStyle(
+            color: Theme.of(context).disabledColor,
+            fontSize: 14.0,
+          ),
+          fillColor: dataManager.isDarkTheme ? const Color(0xFF232323) : const Color(0xFFE9EEF0),
+          filled: true,
         ),
-        fillColor: dataManager.isDarkTheme ? const Color(0xFF232323) : const Color(0xFFE9EEF0),
-        filled: true,
       ),
     );
   }
@@ -232,10 +237,12 @@ class _RoleSelectorState extends State<_RoleSelector> {
     dataManager = Provider.of<DataManager>(context, listen: false);
     return InkWell(
       onTap: _showBottomSheet,
+      borderRadius: BorderRadius.circular(10.0),
       child: Container(
         height: 60.0,
         width: double.infinity,
         decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.0),
           color: dataManager.isDarkTheme ? const Color(0xFF232323) : const Color(0xFFE9EEF0),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 20.0),

@@ -4,7 +4,7 @@
 
 import 'package:flutter/material.dart';
 
-import 'Role.dart';
+import 'role.dart';
 import 'address.dart';
 import 'name.dart';
 
@@ -31,9 +31,9 @@ class Contact {
   factory Contact.fromJson(Map json) {
     DateTime? birthday;
     try {
-      birthday = DateTime.tryParse(json['dob']);
+      birthday = json['dob'] != null ? DateTime.tryParse(json['dob']) : null;
     } catch (e) {
-      debugPrint("Contact fromJson: format exception $e");
+      // dob not provided or parsing issue
     }
     return Contact(
       id: json['contact_id'],
